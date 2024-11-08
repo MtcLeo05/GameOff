@@ -10,7 +10,7 @@ public class DataPersistenceManager : MonoBehaviour
     private string fileName;
     
     private GameData data;
-    private List<IDataPersistence> dataPersistenceObjects = new List<IDataPersistence>();
+    private List<IDataPersistence> dataPersistenceObjects = new();
     private FileDataHandler dataHandler;
     
     public static DataPersistenceManager INSTANCE { get; private set; }
