@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ public class InventoryManager: MonoBehaviour, IDataPersistence
     
     public InventorySlot[] slots;
     public GameObject itemPrefab;
+    
+    public ItemNameDisplay itemName;
 
     private int selectedSlot = -1;
 
@@ -58,6 +61,11 @@ public class InventoryManager: MonoBehaviour, IDataPersistence
         if(selectedSlot >= 0) slots[selectedSlot].deselect();
         slots[newValue].select();
         selectedSlot = newValue;
+
+        if (getSelectedItem())
+        {
+            itemName.changeItemName(getSelectedItem().item);
+        }
     }
     
     public InventoryItem getSelectedItem()
