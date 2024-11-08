@@ -21,7 +21,7 @@ public class InventorySlot: MonoBehaviour, IDropHandler
             InventoryItem slotItem = GetComponentInChildren<InventoryItem>();
 
             if (heldItem.item == slotItem.item && heldItem.item.stackable &&
-                heldItem.count + slotItem.count > heldItem.item.maxStackSize)
+                heldItem.count + slotItem.count < heldItem.item.maxStackSize)
             {
                 slotItem.increaseCount(heldItem.count);
                 Destroy(heldItem.gameObject);
