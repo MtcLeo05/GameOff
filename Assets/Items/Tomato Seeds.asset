@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f5ad9b80e874bbeb8d9743aa51b2240, type: 3}
   m_Name: Tomato Seeds
   m_EditorClassIdentifier: 
-  itemName: 
-  itemType: 0
-  image: {fileID: 0}
-  stackable: 0
+  itemName: Tomato Seeds
+  image: {fileID: 21300000, guid: c9731429d80a2c042a5a35390c991e54, type: 3}
+  stackable: 1
+  maxStackSize: 4
+  droppedItem: {fileID: 7568015928788265204, guid: f1d33a05a0603a34885dfee4da82867f,
+    type: 3}
