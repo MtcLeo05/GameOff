@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMove : MonoBehaviour
@@ -9,8 +10,8 @@ public class PlayerMove : MonoBehaviour
     [Header("Look")]
     public Camera playerCam;
     public float sensitivity = 100f;
-    private float xRot = 0f;
-    public bool vision = false;
+    private float xRot;
+    public bool vision;
 
 
     [Header("Move")]
@@ -22,13 +23,16 @@ public class PlayerMove : MonoBehaviour
 
     [Header("Jump")]
     public Transform feet;
-    public bool grounded = false;
+    public bool grounded;
     public LayerMask mask;
-    public float coyote = 0f;
-    public float jumpCD = 0f;
+    public float coyote;
+    public float jumpCd;
 
+    [Header("Inventory")]
+    [SerializeField] private bool inventoryOpen;
+    [SerializeField] private GameObject inventoryHUD;
+    
     [Header("Other")]
-
     public Vector3 checkPointPos;
     public Quaternion checkPointRot;
 
@@ -46,54 +50,84 @@ public class PlayerMove : MonoBehaviour
         handleLook();
         handleMove();
         handleJump();
+        handleInventory();
+    }
+
+    private void handleInventory()
+    {
+        if(!grounded) return;
+        
+        if (Input.GetButtonDown("Inventory"))
+        {
+            inventoryOpen = !inventoryOpen;
+        }
+
+        if (inventoryOpen)
+        {
+            inventoryHUD.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            inventoryHUD.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     private void FixedUpdate() {
         playerBody.MovePosition(playerBody.position + transform.TransformDirection(move) * Time.fixedDeltaTime);
     }
 
-    void handleLook(){
-        transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * sensitivity);
+    void handleLook()
+    {
+        if (inventoryOpen) return;
+        
+        transform.Rotate(Vector3.up * (Input.GetAxis("Mouse X") * Time.deltaTime * sensitivity));
 
         xRot += Input.GetAxis("Mouse Y") * Time.deltaTime * sensitivity;
         xRot = Mathf.Clamp(xRot, -60f, 60f);
         playerCam.transform.localEulerAngles = Vector3.left * xRot;
-
-        if(Input.GetButtonDown("Vision")) {
-            vision = !vision;
-        }
     }
 
     void handleMove(){
+        if (inventoryOpen)
+        {
+            move = Vector3.zero;
+            return;
+        }
+        
         float vertical = Input.GetAxisRaw("Vertical");
         float horizontal = Input.GetAxisRaw("Horizontal");
 
         bool sprint = Input.GetButton("Sprint");
 
         Vector3 moveDir = new Vector3(horizontal, 0, vertical).normalized;
-        Vector3 targetMove = moveDir * speed * (sprint? 2: 1);
+        Vector3 targetMove = moveDir * (speed * (sprint? 2: 1));
         move = Vector3.SmoothDamp(move, targetMove, ref smoothVelocity, .15f);
     }
 
     void handleJump() {
+        if (inventoryOpen) return;
+        
         if(!grounded) {
             coyote += Time.deltaTime;
         }
 
-        jumpCD -= Time.deltaTime;
-        if(jumpCD <= 0) jumpCD = 0; 
+        jumpCd -= Time.deltaTime;
+        if(jumpCd <= 0) jumpCd = 0; 
 
         if(Input.GetButtonDown("Jump")) {
-            if((grounded || coyote < (20 * Time.deltaTime)) && jumpCD <= 0) {
+            if((grounded || coyote < (20 * Time.deltaTime)) && jumpCd <= 0) {
                 playerBody.AddForce(transform.up * jumpForce);
-                jumpCD = 30 * Time.deltaTime;
+                jumpCd = 30 * Time.deltaTime;
             }
         }
 
         Ray ray = new Ray(feet.transform.position, -transform.up);
-        RaycastHit hit;
 
-        grounded = Physics.Raycast(ray, out hit, .4f, mask);
+        grounded = Physics.Raycast(ray, out _, .4f, mask);
 
         if(grounded) {
             coyote = 0;
