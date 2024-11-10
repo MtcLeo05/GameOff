@@ -6,7 +6,7 @@ public class FoodItem: Item
     public float foodAmount;
 
 
-    public override void use(ref InventoryItem item)
+    public override bool use(ref InventoryItem item, GameObject target)
     {
         item.increaseCount(-1);
 
@@ -14,5 +14,7 @@ public class FoodItem: Item
         {
             Destroy(item.gameObject);
         }
+
+        return true;
     }
 }

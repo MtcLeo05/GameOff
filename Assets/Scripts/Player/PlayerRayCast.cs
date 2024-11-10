@@ -12,9 +12,38 @@ public class PlayerRayCast : MonoBehaviour
     void Update()
     {
         handleInteractable();
+        handleUseItem();
     }
 
-    void handleInteractable() {
+    private void handleUseItem()
+    {
+        if (!Input.GetButtonDown("UseItem")) return;
+        
+        InventoryManager inventory = gameObject.GetComponent<InventoryManager>();
+        if(!inventory) return;
+
+        pos = head.transform.position;
+
+        Ray ray = new Ray(head.transform.position, head.transform.forward);
+
+        Debug.DrawRay(pos, head.transform.forward * range, Color.red);
+
+        var inventoryItem = inventory.getSelectedItem();
+        if (!inventoryItem) return;
+        if (!inventoryItem.item) return;
+            
+        if (!Physics.Raycast(ray, out RaycastHit hitInfo, range, layer)) 
+        {
+            if (inventoryItem.item.use(ref inventoryItem, null))
+            {
+                return;
+            }
+        }
+        
+        inventoryItem.item.use(ref inventoryItem, hitInfo.collider.gameObject);
+    }
+
+    private void handleInteractable() {
         pos = head.transform.position;
 
         Ray ray = new Ray(head.transform.position, head.transform.forward);
@@ -36,7 +65,7 @@ public class PlayerRayCast : MonoBehaviour
 
         IPlayerInteractable interactable = hitInfo.collider.GetComponent<IPlayerInteractable>();
 
-        if (old != null && old != hitInfo.collider) old.GetComponent<IPlayerInteractable>().highlight(false);
+        if (old != null && old != hitInfo.collider.gameObject) old.GetComponent<IPlayerInteractable>().highlight(false);
         interactable.highlight(true);
 
         if(Input.GetButtonDown("Interact")) interactable.activate(gameObject);

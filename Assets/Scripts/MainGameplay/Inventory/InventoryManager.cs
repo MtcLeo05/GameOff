@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class InventoryManager: MonoBehaviour, IDataPersistence
 {
-    public ItemRegistry registry;
+    public Registry registry;
     
     public InventorySlot[] slots;
     public GameObject itemPrefab;
@@ -18,42 +18,48 @@ public class InventoryManager: MonoBehaviour, IDataPersistence
 
     private void Start()
     {
-        registry = FindObjectOfType<ItemRegistry>();
+        registry = FindObjectOfType<Registry>();
         changeSelectedSlot(0);
     }
 
     private void Update()
     {
-        float f = Input.mouseScrollDelta.y;
+        var f = Input.mouseScrollDelta.y;
 
-        if (f < 0)
+        switch (f)
         {
-            int toUse = selectedSlot;
-            if (++toUse > 10)
+            case < 0:
             {
-                toUse = 0;
-            }
+                int toUse = selectedSlot;
+                if (++toUse > 10)
+                {
+                    toUse = 0;
+                }
             
-            changeSelectedSlot(toUse);
-            return;
-        }
-
-        if (f > 0)
-        {
-            int toUse = selectedSlot;
-            if (--toUse < 0)
+                changeSelectedSlot(toUse);
+                return;
+            }
+            case > 0:
             {
-                toUse = 9;
+                int toUse = selectedSlot;
+                if (--toUse < 0)
+                {
+                    toUse = 9;
+                }
+                changeSelectedSlot(toUse);
+                break;
             }
-            changeSelectedSlot(toUse);
         }
 
-        if (Input.GetButtonDown("UseItem"))
+        for (int i = 0; i < 10; i++)
         {
-            InventoryItem inventoryItem = getSelectedItem();
-            
-            if(inventoryItem != null) inventoryItem.item.use(ref inventoryItem);
+            if (Input.GetButtonDown("Slot" + ((i + 1) % 10)))
+            {
+                changeSelectedSlot(i);
+                break;
+            }
         }
+        
     }
 
     void changeSelectedSlot(int newValue)
@@ -113,7 +119,7 @@ public class InventoryManager: MonoBehaviour, IDataPersistence
             SerializableStack item = data.playerInventory[i];
             if(item.id.Equals("empty")) continue;
 
-            Item it = registry.getFromName(item.id);
+            Item it = registry.getItemFromName(item.id);
 
             spawnItem(it, slots[i]).overrideCount(item.count);
         }
