@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class GameData
 {
     [NonSerialized] public Registry registry;
@@ -14,18 +14,28 @@ public class GameData
     public SerializableDictionary<string, CropData> crops;
     
     [Header("Player Stuff")]
+    public Vector3 playerPosition;
     public List<SerializableStack> playerInventory;
+    public float maxHealth, health, regen;
+    public float maxStamina, stamina, staminaDrain;
 
     public GameData()
     {
         dayCount = 1; 
         dayTimer = 0;
-        playerInventory = new ();
-        crops = new();
+
+        playerPosition = new Vector3(-20, -10, 20);
+        playerInventory = new List<SerializableStack>();
+        maxHealth = health = 100;
+        regen = 1f;
+        maxStamina = stamina = 50;
+        staminaDrain = 1f;
+        
+        crops = new SerializableDictionary<string, CropData>();
     }
 }
 
-[System.Serializable]
+[Serializable]
 public class SerializableStack
 {
     public string id;

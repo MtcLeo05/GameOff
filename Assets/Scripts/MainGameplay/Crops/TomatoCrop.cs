@@ -34,8 +34,8 @@ public class TomatoCrop: CropBase, IPlayerInteractable
 
     public override void harvest(GameObject player)
     {
-        InventoryManager inventory = player.GetComponent<InventoryManager>();
-        if (!inventory)
+        PlayerInventoryManager playerInventory = player.GetComponent<PlayerInventoryManager>();
+        if (!playerInventory)
         {
             foreach (CropDrop drop in drops)
             {
@@ -57,7 +57,7 @@ public class TomatoCrop: CropBase, IPlayerInteractable
             if (!(random <= drop.chance)) continue;
             for (var i = 0; i < drop.count; i++)
             {
-                if (!inventory.addItem(drop.item))
+                if (!playerInventory.addItem(drop.item))
                 {
                     Instantiate(drop.item.droppedItem, player.transform.position, Quaternion.identity);
                 }

@@ -394,6 +394,7 @@ GameObject:
   - component: {fileID: 9126393455946424243}
   - component: {fileID: 7763913233711870364}
   - component: {fileID: 5127920105616337481}
+  - component: {fileID: 7416063390538575565}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -550,6 +551,7 @@ MonoBehaviour:
   inventoryHUD: {fileID: 0}
   checkPointPos: {x: 0, y: 0, z: 0}
   checkPointRot: {x: 0, y: 0, z: 0, w: 0}
+  health: {fileID: 0}
 --- !u!114 &9126393455946424243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,6 +595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2efd21ba32be49c48f5f629106df9860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  registry: {fileID: 0}
   slots:
   - {fileID: 0}
   - {fileID: 0}
@@ -636,3 +639,22 @@ MonoBehaviour:
   - {fileID: 0}
   itemPrefab: {fileID: 5143621824871549945, guid: 5660c7eda6fc9934fb7b74682f9a4712,
     type: 3}
+  itemName: {fileID: 0}
+--- !u!114 &7416063390538575565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6125224375763533378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fe7140a35ec4dbcafebfaac7fb682aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  health: 100
+  regen: 1
+  maxStamina: 50
+  stamina: 50
+  staminaDrain: 1

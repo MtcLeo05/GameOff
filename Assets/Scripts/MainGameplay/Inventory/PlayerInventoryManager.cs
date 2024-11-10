@@ -5,7 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class InventoryManager: MonoBehaviour, IDataPersistence
+public class PlayerInventoryManager: MonoBehaviour, IDataPersistence
 {
     public Registry registry;
     
