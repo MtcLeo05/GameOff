@@ -7,10 +7,10 @@ public class ItemDrop: MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<InventoryManager>())
+        if (other.GetComponent<PlayerInventoryManager>())
         {
-            InventoryManager inventoryManager = other.GetComponent<InventoryManager>();
-            if(inventoryManager.addItem(item)) Destroy(transform.parent.gameObject);
+            PlayerInventoryManager playerInventoryManager = other.GetComponent<PlayerInventoryManager>();
+            if(playerInventoryManager.addItem(item)) Destroy(transform.parent.gameObject);
         }
     }
 }

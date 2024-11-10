@@ -9,5 +9,5 @@ public abstract class Item : ScriptableObject
     public int maxStackSize = 1;
     public GameObject droppedItem;
 
-    public abstract bool use(ref InventoryItem item, GameObject target);
+    public abstract bool use(ref InventoryItem item, GameObject target, GameObject source);
 }

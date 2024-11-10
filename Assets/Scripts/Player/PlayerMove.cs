@@ -5,21 +5,22 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerMove : MonoBehaviour
+public class PlayerMove : MonoBehaviour, IDataPersistence
 {
     [Header("Look")]
     public Camera playerCam;
     public float sensitivity = 100f;
     private float xRot;
     public bool vision;
-
-
+    
     [Header("Move")]
     public Rigidbody playerBody;
     public float speed = 2f;
     public float jumpForce = 2f;
     public Vector3 move;
     public Vector3 smoothVelocity;
+
+    public bool sprinting;
 
     [Header("Jump")]
     public Transform feet;
@@ -35,6 +36,7 @@ public class PlayerMove : MonoBehaviour
     [Header("Other")]
     public Vector3 checkPointPos;
     public Quaternion checkPointRot;
+    public PlayerHealth health;
 
     void Start()
     {
@@ -43,6 +45,7 @@ public class PlayerMove : MonoBehaviour
         playerBody = GetComponent<Rigidbody>();
         checkPointPos = transform.position;
         checkPointRot = transform.rotation;
+        health = GetComponent<PlayerHealth>();
     }
 
     void Update()
@@ -101,10 +104,10 @@ public class PlayerMove : MonoBehaviour
         float vertical = Input.GetAxisRaw("Vertical");
         float horizontal = Input.GetAxisRaw("Horizontal");
 
-        bool sprint = Input.GetButton("Sprint");
+        sprinting = Input.GetButton("Sprint");
 
         Vector3 moveDir = new Vector3(horizontal, 0, vertical).normalized;
-        Vector3 targetMove = moveDir * (speed * (sprint? 2: 1));
+        Vector3 targetMove = moveDir * (speed * (sprinting? 2: 1));
         move = Vector3.SmoothDamp(move, targetMove, ref smoothVelocity, .15f);
     }
 
@@ -137,5 +140,18 @@ public class PlayerMove : MonoBehaviour
     public void die(){
         transform.position = checkPointPos;
         transform.rotation = checkPointRot;
+        health.health = health.maxHealth / 2f;
+        health.stamina = health.maxStamina / 2f;
+    }
+
+    public void loadData(GameData data)
+    {
+        data.playerPosition = checkPointPos;
+    }
+
+    public void saveData(ref GameData data)
+    {
+        transform.position = data.playerPosition;
+        checkPointPos = data.playerPosition;
     }
 }
