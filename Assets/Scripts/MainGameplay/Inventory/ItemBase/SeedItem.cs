@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Items/Seed")]
 public class SeedItem: Item
 {
-    public GameObject crop;
+    public GameObject cropPrefab;
     
     public override bool use(ref InventoryItem item, GameObject target)
     {
@@ -18,16 +19,17 @@ public class SeedItem: Item
             Destroy(item.gameObject);
         }
 
-        var cropObj = Instantiate(crop, target.transform.position, Quaternion.identity);
-        cropObj.transform.parent = target.transform;
+        var cropParent = Instantiate(cropPrefab, target.transform.position, Quaternion.identity);
         
-        CropBase cropI = cropObj.GetComponentInChildren<CropBase>();
+        CropBase crop = cropParent.GetComponentInChildren<CropBase>();
         Vector3 pos = crop.transform.position;
-        pos.x += cropI.xOffset;
-        pos.y += cropI.yOffset;
-        pos.z += cropI.zOffset;
+        pos.x += crop.xOffset;
+        pos.y += crop.yOffset;
+        pos.z += crop.zOffset;
         crop.transform.position = pos;
-        cropHolder.crop = cropI;
+        
+        crop.transform.parent.parent = target.transform;
+        cropHolder.crop = crop;
 
         return true;
     }
