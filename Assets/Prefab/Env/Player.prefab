@@ -540,6 +540,7 @@ MonoBehaviour:
   jumpForce: 300
   move: {x: 0, y: 0, z: 0}
   smoothVelocity: {x: 0, y: 0, z: 0}
+  sprinting: 0
   feet: {fileID: 5785584459515902960}
   grounded: 0
   mask:
@@ -652,9 +653,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fe7140a35ec4dbcafebfaac7fb682aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthSlider: {fileID: 0}
+  staminaSlider: {fileID: 0}
   maxHealth: 100
   health: 100
   regen: 1
   maxStamina: 50
   stamina: 50
-  staminaDrain: 1
+  staminaDrain: 0.25

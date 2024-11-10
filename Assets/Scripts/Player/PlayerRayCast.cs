@@ -32,15 +32,15 @@ public class PlayerRayCast : MonoBehaviour
         if (!inventoryItem) return;
         if (!inventoryItem.item) return;
             
-        if (!Physics.Raycast(ray, out RaycastHit hitInfo, range, layer)) 
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, range, layer)) 
         {
-            if (inventoryItem.item.use(ref inventoryItem, null, gameObject))
+            if (inventoryItem.item.use(ref inventoryItem, hitInfo.transform.gameObject, gameObject))
             {
                 return;
             }
         }
         
-        inventoryItem.item.use(ref inventoryItem, hitInfo.collider.gameObject, gameObject);
+        inventoryItem.item.use(ref inventoryItem, null, gameObject);
     }
 
     private void handleInteractable() {

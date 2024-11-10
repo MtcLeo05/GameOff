@@ -20,7 +20,7 @@ public class SeedItem: Item
             Destroy(item.gameObject);
         }
 
-        var cropParent = Instantiate(cropPrefab, target.transform.position, Quaternion.identity);
+        var cropParent = Instantiate(cropPrefab, target.transform.position, target.transform.rotation);
         
         CropBase crop = cropParent.GetComponentInChildren<CropBase>();
         Vector3 pos = crop.transform.position;
