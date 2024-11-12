@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -13,9 +14,9 @@ public class FileDataHandler
         this.fileName = fileName;
     }
 
-    public GameData load()
+    public GameData load(string id)
     {
-        string path = Path.Combine(filePath, fileName);
+        string path = Path.Combine(filePath, id, fileName);
         GameData loadedData = null;
 
         if (File.Exists(path))
@@ -42,9 +43,33 @@ public class FileDataHandler
         return loadedData;
     }
 
-    public void save(GameData gameData)
+    public Dictionary<string, GameData> loadAll()
     {
-        string path = Path.Combine(filePath, fileName);
+        Dictionary<string, GameData> loadedData = new Dictionary<string, GameData>();
+
+        IEnumerable<DirectoryInfo> dirInfos = new DirectoryInfo(filePath).EnumerateDirectories();
+        
+        foreach (DirectoryInfo info in dirInfos)
+        {
+            string profileId = info.Name;
+            
+            string fullPath = Path.Combine(filePath, profileId, fileName);
+            if (!File.Exists(fullPath)) continue;
+
+            GameData profileData = load(profileId);
+
+            if (profileData != null)
+            {
+                loadedData.Add(profileId, profileData);
+            }
+        }
+        
+        return loadedData;
+    }
+
+    public void save(GameData gameData, string id)
+    {
+        string path = Path.Combine(filePath, id, fileName);
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));

@@ -3,14 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DataPersistenceManager : MonoBehaviour
 {
     [Header("File Storage Config")] [SerializeField]
     private string fileName;
     
-    public Registry registry;
+    [SerializeField] private bool initializeDataIfNull;
     
+    public Registry registry;
+
+    [SerializeField]
+    private string profileId;
     private GameData data;
     private List<IDataPersistence> dataPersistenceObjects = new();
     private FileDataHandler dataHandler;
@@ -19,17 +24,42 @@ public class DataPersistenceManager : MonoBehaviour
     
     private void Awake() {
         if (INSTANCE != null) {
-            Debug.LogWarning("Found more than one Data Persistence Manager");
+            Destroy(gameObject);
+            return;
         }
         
         INSTANCE = this;
+        DontDestroyOnLoad(gameObject);
+        
+        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
+        SceneManager.sceneLoaded += onSceneLoaded;
+        SceneManager.sceneUnloaded += onSceneUnloaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= onSceneLoaded;
+        SceneManager.sceneUnloaded -= onSceneUnloaded;
+    }
+
+    public void onSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
         dataPersistenceObjects = findAllDataPersistenceObjects();
         loadGame();
+    }
+
+    public void onSceneUnloaded(Scene scene)
+    {
+        saveGame();
+    }
+    
+    private void OnApplicationQuit()
+    {
+        saveGame();
     }
 
     private List<IDataPersistence> findAllDataPersistenceObjects()
@@ -39,24 +69,49 @@ public class DataPersistenceManager : MonoBehaviour
         return new List<IDataPersistence>(persistenceObjects);
     }
 
-    private void OnApplicationQuit()
+    public void changeSelectedProfileId(string profileId)
     {
-        saveGame();
+        this.profileId = profileId;
+        loadGame();
     }
+    
+    public bool hasGameData()
+    {
+        foreach (var (key, value) in getAllData())
+        {
+            if (value != null)
+            {
+                return true;
+            }
+        }
 
+        return false;
+    }
+    
     public void newGame()
     {
-        data = new GameData();
-        data.registry = registry;
+        data = new GameData
+        {
+            registry = registry
+        };
+        
+        saveGame();
     }
 
     public void loadGame()
     {
-        data = dataHandler.load();
+        data = dataHandler.load(profileId);
         
         if (data == null)
         {
-            newGame();
+            if (initializeDataIfNull)
+            {
+                data = new();
+            }
+            else
+            {
+                return;
+            }
         }
         
         data.registry = registry;
@@ -68,11 +123,21 @@ public class DataPersistenceManager : MonoBehaviour
 
     public void saveGame()
     {
+        if (data == null)
+        {
+            return;
+        }
+        
         foreach (IDataPersistence dataObj in dataPersistenceObjects)
         {
             dataObj.saveData(ref data);
         }
         
-        dataHandler.save(data);
+        dataHandler.save(data, profileId);
+    }
+
+    public Dictionary<string, GameData> getAllData()
+    {
+        return dataHandler.loadAll();
     }
 }
