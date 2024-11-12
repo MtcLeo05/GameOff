@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemRegistry: MonoBehaviour
+public class Registry: MonoBehaviour
 {
     public List<RegisteredItem> items = new();
 
-    public Item getFromName(string id)
+    public Item getItemFromName(string id)
     {
         foreach (RegisteredItem registeredItem in items)
         {
@@ -32,6 +32,21 @@ public class ItemRegistry: MonoBehaviour
 
         return null;
     }
+
+    public List<RegisteredCrop> crops = new();
+
+    public GameObject getCropFromType(CropBase.CropType type)
+    {
+        foreach (RegisteredCrop crop in crops)
+        {
+            if (crop.type == type)
+            {
+                return crop.crop;
+            }
+        }
+
+        return null;
+    }
 }
 
 [Serializable]
@@ -39,4 +54,10 @@ public class RegisteredItem
 {
     public string id;
     public Item item;
+}
+
+[Serializable]
+public class RegisteredCrop{
+    public CropBase.CropType type;
+    public GameObject crop;
 }

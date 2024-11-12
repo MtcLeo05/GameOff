@@ -9,6 +9,8 @@ public class DataPersistenceManager : MonoBehaviour
     [Header("File Storage Config")] [SerializeField]
     private string fileName;
     
+    public Registry registry;
+    
     private GameData data;
     private List<IDataPersistence> dataPersistenceObjects = new();
     private FileDataHandler dataHandler;
@@ -45,6 +47,7 @@ public class DataPersistenceManager : MonoBehaviour
     public void newGame()
     {
         data = new GameData();
+        data.registry = registry;
     }
 
     public void loadGame()
@@ -55,7 +58,8 @@ public class DataPersistenceManager : MonoBehaviour
         {
             newGame();
         }
-
+        
+        data.registry = registry;
         foreach (IDataPersistence dataObj in dataPersistenceObjects)
         {
             dataObj.loadData(data);

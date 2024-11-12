@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: Tomato Seeds
   m_EditorClassIdentifier: 
   itemName: Tomato Seeds
-  image: {fileID: 21300000, guid: c9731429d80a2c042a5a35390c991e54, type: 3}
+  image: {fileID: 21300000, guid: e0ab57c786587c64b8abdaa175d52709, type: 3}
   stackable: 1
-  maxStackSize: 4
-  droppedItem: {fileID: 7568015928788265204, guid: f1d33a05a0603a34885dfee4da82867f,
+  maxStackSize: 10
+  droppedItem: {fileID: 683827669289443482, guid: f1d33a05a0603a34885dfee4da82867f,
+    type: 3}
+  cropPrefab: {fileID: 8737220026556335625, guid: b9c0e8d12a678094ab9c182b3dc7d3fd,
     type: 3}
