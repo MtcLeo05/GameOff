@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerRayCast : MonoBehaviour
@@ -8,7 +9,7 @@ public class PlayerRayCast : MonoBehaviour
 
     GameObject old;
     Vector3 pos;
-    
+
     void Update()
     {
         handleInteractable();
@@ -56,20 +57,26 @@ public class PlayerRayCast : MonoBehaviour
             return;
         }
 
-        if (hitInfo.collider.GetComponent<IPlayerInteractable>() == null)
+        if (hitInfo.collider.GetComponent<IPlayerInteractable>() == null && hitInfo.collider.GetComponentInChildren<IPlayerInteractable>() == null)
         {
             if (old) old.GetComponent<IPlayerInteractable>().highlight(false);
             old = null;
             return;
         }
 
-        IPlayerInteractable interactable = hitInfo.collider.GetComponent<IPlayerInteractable>();
+        IPlayerInteractable interactable = hitInfo.collider.GetComponent<IPlayerInteractable>() != null?
+                hitInfo.collider.GetComponent<IPlayerInteractable>(): 
+                hitInfo.collider.GetComponentInChildren<IPlayerInteractable>();
+            
 
-        if (old != null && old != hitInfo.collider.gameObject) old.GetComponent<IPlayerInteractable>().highlight(false);
+        if (old != null && old != interactable.getGameObject()) old.GetComponent<IPlayerInteractable>().highlight(false);
         interactable.highlight(true);
 
-        if(Input.GetButtonDown("Interact")) interactable.activate(gameObject);
+        if(Input.GetButtonDown("UseItem"))
+        {
+            interactable.activate(gameObject);
+        }
 
-        old = hitInfo.collider.gameObject;
+        old = interactable.getGameObject();
     }
 }

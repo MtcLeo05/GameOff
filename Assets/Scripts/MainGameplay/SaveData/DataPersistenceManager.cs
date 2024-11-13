@@ -7,9 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class DataPersistenceManager : MonoBehaviour
 {
-    [Header("File Storage Config")] [SerializeField]
-    private string fileName;
-    
     [SerializeField] private bool initializeDataIfNull;
     
     public Registry registry;
@@ -31,7 +28,7 @@ public class DataPersistenceManager : MonoBehaviour
         INSTANCE = this;
         DontDestroyOnLoad(gameObject);
         
-        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
+        dataHandler = new FileDataHandler(Application.persistentDataPath);
     }
 
     private void OnEnable()

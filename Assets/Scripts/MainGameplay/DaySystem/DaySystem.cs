@@ -71,14 +71,18 @@ public class DaySystem : MonoBehaviour, IDataPersistence
         moon.color = moonColor;
     }
     
-    public void loadData(GameData data)
+    public void loadData(GameData d)
     {
+        LevelData data = d.levelData;
+        
         dayCount = data.dayCount;
         dayTimer = data.dayTimer;
     }
 
-    public void saveData(ref GameData data)
+    public void saveData(ref GameData d)
     {
+        LevelData data = d.levelData;
+        
         data.dayCount = dayCount;
         data.dayTimer = dayTimer;
     }

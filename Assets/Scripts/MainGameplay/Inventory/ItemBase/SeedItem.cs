@@ -20,18 +20,7 @@ public class SeedItem: Item
             Destroy(item.gameObject);
         }
 
-        var cropParent = Instantiate(cropPrefab, target.transform.position, target.transform.rotation);
-        
-        CropBase crop = cropParent.GetComponentInChildren<CropBase>();
-        Vector3 pos = crop.transform.position;
-        pos.x += crop.xOffset;
-        pos.y += crop.yOffset;
-        pos.z += crop.zOffset;
-        crop.transform.position = pos;
-        
-        crop.transform.parent.parent = target.transform;
-        cropHolder.crop = crop;
-
+        cropHolder.plantCrop(cropPrefab);
         return true;
     }
 }

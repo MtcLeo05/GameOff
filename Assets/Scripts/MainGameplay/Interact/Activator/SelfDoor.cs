@@ -53,4 +53,9 @@ public class SelfDoor : MonoBehaviour, IPlayerInteractable
     {
         return state;
     }
+
+    public GameObject getGameObject()
+    {
+        return gameObject;
+    }
 }

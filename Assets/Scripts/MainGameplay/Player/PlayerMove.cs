@@ -29,9 +29,8 @@ public class PlayerMove : MonoBehaviour, IDataPersistence
     public float coyote;
     public float jumpCd;
 
-    [Header("Inventory")]
-    [SerializeField] private bool inventoryOpen;
-    [SerializeField] private GameObject inventoryHUD;
+    [Header("Inventory")] [SerializeField] public bool inventoryOpen = false;
+    private PlayerInventoryManager inventory;
     
     [Header("Other")]
     public Vector3 checkPointPos;
@@ -46,6 +45,7 @@ public class PlayerMove : MonoBehaviour, IDataPersistence
         checkPointPos = transform.position;
         checkPointRot = transform.rotation;
         health = GetComponent<PlayerHealth>();
+        inventory = GetComponent<PlayerInventoryManager>();
     }
 
     void Update()
@@ -63,19 +63,14 @@ public class PlayerMove : MonoBehaviour, IDataPersistence
         if (Input.GetButtonDown("Inventory"))
         {
             inventoryOpen = !inventoryOpen;
-        }
-
-        if (inventoryOpen)
-        {
-            inventoryHUD.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        else
-        {
-            inventoryHUD.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            if (inventoryOpen)
+            {
+                inventory.openInventory(null);
+            }
+            else
+            {
+                inventory.closeInventory();
+            }
         }
     }
 
@@ -146,12 +141,12 @@ public class PlayerMove : MonoBehaviour, IDataPersistence
 
     public void loadData(GameData data)
     {
-        data.playerPosition = checkPointPos;
+        transform.position = data.playerData.playerPosition;
+        checkPointPos = data.playerData.playerPosition;
     }
 
     public void saveData(ref GameData data)
     {
-        transform.position = data.playerPosition;
-        checkPointPos = data.playerPosition;
+        data.playerData.playerPosition = checkPointPos;
     }
 }

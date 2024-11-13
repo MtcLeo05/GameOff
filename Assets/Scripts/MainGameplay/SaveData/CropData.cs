@@ -3,22 +3,22 @@ using System;
 [Serializable]
 public class CropData
 {
+    public CropType cropType;
     
-    public CropBase.CropType cropType;
-    public SerializableCropDrop[] drops;
-    
-    public int maxStage;
     public int stage;
-    public float[] timeForStage;
     public float lifetime;
 
-    public CropData(CropBase.CropType cropType, SerializableCropDrop[] drops, int maxStage, int stage, float lifetime, float[] timeForStage)
+    public CropData(CropType cropType, int stage, float lifetime)
     {
         this.cropType = cropType;
-        this.drops = drops;
-        this.maxStage = maxStage;
         this.stage = stage;
         this.lifetime = lifetime;
-        this.timeForStage = timeForStage;
     }
+    
 } 
+
+[Serializable]
+public enum CropType
+{
+    Tomato
+}

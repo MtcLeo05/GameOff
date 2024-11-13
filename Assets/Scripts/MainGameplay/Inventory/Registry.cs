@@ -35,7 +35,7 @@ public class Registry: MonoBehaviour
 
     public List<RegisteredCrop> crops = new();
 
-    public GameObject getCropFromType(CropBase.CropType type)
+    public GameObject getCropFromType(CropType type)
     {
         foreach (RegisteredCrop crop in crops)
         {
@@ -58,6 +58,6 @@ public class RegisteredItem
 
 [Serializable]
 public class RegisteredCrop{
-    public CropBase.CropType type;
+    public CropType type;
     public GameObject crop;
 }
