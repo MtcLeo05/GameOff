@@ -16,7 +16,7 @@ public class Button : MonoBehaviour, IPlayerInteractable
     {
         if (activatableObj.GetComponent<IActivatable>() != null) activatable = activatableObj.GetComponent<IActivatable>();
 
-        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        Renderer meshRenderer = GetComponent<Renderer>();
 
         if (meshRenderer == null) return;
 
@@ -39,7 +39,7 @@ public class Button : MonoBehaviour, IPlayerInteractable
 
     public void highlight(bool isHovered)
     {
-        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        Renderer meshRenderer = GetComponent<Renderer>();
         if (meshRenderer == null) return;
 
         meshRenderer.materials[1].SetColor("_OutlineColor", isHovered ? Color.black: Color.clear);
@@ -48,5 +48,10 @@ public class Button : MonoBehaviour, IPlayerInteractable
     public bool state()
     {
         return bState;
+    }
+
+    public GameObject getGameObject()
+    {
+        return gameObject;
     }
 }

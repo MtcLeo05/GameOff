@@ -1,24 +1,14 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerInventoryManager: MonoBehaviour, IDataPersistence
+public class PlayerInventoryManager: InventoryManager
 {
-    public Registry registry;
-    
-    public InventorySlot[] slots;
-    public GameObject itemPrefab;
-    
     public ItemNameDisplay itemName;
 
     private int selectedSlot = -1;
-
+    
     private void Start()
     {
-        registry = FindObjectOfType<Registry>();
         changeSelectedSlot(0);
     }
 
@@ -73,62 +63,17 @@ public class PlayerInventoryManager: MonoBehaviour, IDataPersistence
             itemName.changeItemName(getSelectedItem().item);
         }
     }
-    
-    public InventoryItem getSelectedItem()
+
+    public override void saveData(ref GameData d)
     {
-        return slots[selectedSlot].GetComponentInChildren<InventoryItem>();
-    }
-    
-    public bool addItem(Item item)
-    {
-        foreach (InventorySlot slot in slots)
+        PlayerData data = d.playerData;
+        
+        if (data.playersInventory.ContainsKey(id))
         {
-            InventoryItem slotItem = slot.GetComponentInChildren<InventoryItem>();
-            if (slotItem != null && slotItem.item == item && slotItem.item.stackable && slotItem.count < slotItem.item.maxStackSize)
-            {
-                slotItem.increaseCount(1);
-                return true;
-            }
+            data.playersInventory.Remove(id);
         }
         
-        foreach (InventorySlot slot in slots)
-        {
-            InventoryItem slotItem = slot.GetComponentInChildren<InventoryItem>();
-            if (slotItem == null)
-            {
-                spawnItem(item, slot);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public InventoryItem spawnItem(Item item, InventorySlot slot)
-    {
-        GameObject newItem = Instantiate(itemPrefab, slot.transform);
-        InventoryItem inventoryItem = newItem.GetComponent<InventoryItem>();
-        inventoryItem.initItem(item);
-        return inventoryItem;
-    }
-
-    public void loadData(GameData data)
-    {
-        for (var i = 0; i < data.playerInventory.Count; i++)
-        {
-            SerializableStack item = data.playerInventory[i];
-            if(item.id.Equals("empty")) continue;
-
-            Item it = registry.getItemFromName(item.id);
-
-            spawnItem(it, slots[i]).overrideCount(item.count);
-        }
-    }
-
-    public void saveData(ref GameData data)
-    {
-        data.playerInventory.Clear();
-        
+        List<SerializableStack> items = new List<SerializableStack>();
         for (var i = 0; i < slots.Length; i++)
         {
             InventorySlot inventorySlot = slots[i];
@@ -139,13 +84,69 @@ public class PlayerInventoryManager: MonoBehaviour, IDataPersistence
             if (item == null)
             {
                 stack = new SerializableStack("empty", 0);
-                data.playerInventory.Add(stack);
+                items.Add(stack);
                 continue;
             }
 
-            string id = registry.getIdFromItem(item.item);
-            stack = new SerializableStack(id, item.count);
-            data.playerInventory.Add(stack);
+            string itemId = registry.getIdFromItem(item.item);
+            stack = new SerializableStack(itemId, item.count);
+            items.Add(stack);
+        }
+        
+        data.playersInventory.Add(id, new InventoryData(items));
+    }
+
+    public override void loadData(GameData d)
+    {
+        PlayerData data = d.playerData;
+        
+        if (!data.playersInventory.TryGetValue(id, out InventoryData items)) return;
+        
+        for (var i = 0; i < items.stacks.Count; i++)
+        {
+            SerializableStack item = items.stacks[i];
+            if(item.id.Equals("empty")) continue;
+
+            Item it = registry.getItemFromName(item.id);
+
+            spawnItem(it, slots[i]).overrideCount(item.count);
+        }
+    }
+
+    public InventoryItem getSelectedItem()
+    {
+        return slots[selectedSlot].GetComponentInChildren<InventoryItem>();
+    }
+
+    private ContainerBase lastContainer;
+    public void openInventory(ContainerBase container)
+    {
+        GetComponent<PlayerMove>().inventoryOpen = true;    
+        inventoryHud.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        if (!container)
+        {
+            if (lastContainer) lastContainer.close();
+            lastContainer = null;
+            return;
+        }
+
+        lastContainer = container;
+        lastContainer.inventory.inventoryHud.SetActive(true);
+    }
+
+    public void closeInventory()
+    {
+        inventoryHud.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        if (lastContainer)
+        {
+            lastContainer.inventory.inventoryHud.SetActive(false);
+            lastContainer.close();
         }
     }
 }

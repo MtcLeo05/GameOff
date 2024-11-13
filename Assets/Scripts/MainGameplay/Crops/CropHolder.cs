@@ -12,34 +12,41 @@ public class CropHolder: MonoBehaviour, IDataPersistence
     {
         id = Guid.NewGuid().ToString();
     }
+
+    public CropBase plantCrop(GameObject newCrop)
+    {
+        CropBase crop = Instantiate(newCrop, transform.position, Quaternion.identity).GetComponentInChildren<CropBase>();
+
+        crop.transform.parent.position = transform.position + (transform.rotation * crop.offset);
+        crop.transform.parent.rotation = transform.rotation;
+        crop.transform.parent.parent = transform;
+
+        this.crop = crop;
+        
+        return crop;
+    }
     
     public void loadData(GameData data)
     {
-        if (!data.crops.TryGetValue(id, out var cData)) return;
+        LevelCropData d = data.levelCropData;
+        if (!d.crops.TryGetValue(id, out var cData)) return;
 
-        crop = Instantiate(data.registry.getCropFromType(cData.cropType), transform.position, transform.rotation).GetComponentInChildren<CropBase>();
-        
-        Vector3 pos = crop.transform.position;
-        pos.x += crop.xOffset;
-        pos.y += crop.yOffset;
-        pos.z += crop.zOffset;
-        crop.transform.position = pos;
-        
-        crop.transform.parent.parent = transform;
+        crop = plantCrop(data.registry.getCropFromType(cData.cropType));
         crop.loadData(cData, data.registry);
     }
 
     public void saveData(ref GameData data)
     {
+        LevelCropData d = data.levelCropData;
         if(!crop) return;
         
-        CropData cData = crop.saveData(data.registry);
+        CropData cData = crop.saveData();
 
-        if (data.crops.ContainsKey(id))
+        if (d.crops.ContainsKey(id))
         {
-            data.crops.Remove(id);
+            d.crops.Remove(id);
         }
         
-        data.crops.Add(id, cData);
+        d.crops.Add(id, cData);
     }
 }

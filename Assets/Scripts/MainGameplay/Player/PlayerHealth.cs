@@ -14,8 +14,8 @@ public class PlayerHealth: MonoBehaviour, IDataPersistence
     public float regen = 1f;
 
     [Header("Stamina Config")] 
-    public float maxStamina = 50;
-    public float stamina = 50;
+    public float maxStamina = 200;
+    public float stamina = 200;
     public float staminaDrain = 1f;
     
     PlayerMove player;
@@ -38,7 +38,7 @@ public class PlayerHealth: MonoBehaviour, IDataPersistence
         }
         
         stamina -= staminaDrain * (health <= maxHealth? 1f: 0.25f) * Time.deltaTime * (player.sprinting ? 2 : 1);
-        health += staminaDrain * Time.deltaTime * (player.sprinting ? 4 : 1);
+        health += regen * Time.deltaTime * (player.sprinting ? 4 : 1);
         
         health = Mathf.Clamp(health, 0, maxHealth);
         stamina = Mathf.Clamp(stamina, 0, maxStamina);
@@ -46,21 +46,13 @@ public class PlayerHealth: MonoBehaviour, IDataPersistence
 
     public void loadData(GameData data)
     {
-        maxHealth = data.maxHealth;
-        health = data.health;
-        regen = data.regen;
-        maxStamina = data.maxStamina;
-        stamina = data.stamina;
-        staminaDrain = data.staminaDrain;
+        health = data.playerData.health;
+        stamina = data.playerData.stamina;
     }
 
     public void saveData(ref GameData data)
     {
-        data.maxHealth = maxHealth;
-        data.health = health;
-        data.regen = regen;
-        data.maxStamina = maxStamina;
-        data.stamina = stamina;
-        data.staminaDrain = staminaDrain;
+        data.playerData.health = health;
+        data.playerData.stamina = stamina;
     }
 }

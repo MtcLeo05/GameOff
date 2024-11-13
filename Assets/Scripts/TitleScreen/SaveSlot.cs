@@ -33,7 +33,7 @@ public class SaveSlot: MonoBehaviour
         noDataObj.SetActive(false);
         hasDataObj.SetActive(true);
         
-        dayCountText.text = "DAY COUNT: " + data.dayCount;
+        dayCountText.text = "DAY COUNT: " + data.levelData.dayCount;
     }
 
     public string getProfileId()

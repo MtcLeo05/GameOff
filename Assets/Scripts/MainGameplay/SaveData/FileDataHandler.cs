@@ -5,44 +5,29 @@ using UnityEngine;
 
 public class FileDataHandler
 {
-    private string filePath;
-    private string fileName;
+    private readonly string filePath;
 
-    public FileDataHandler(string filePath, string fileName)
+    private const string containerName = "container.kirakira";
+    private const string levelName = "level.dokidoki";
+    private const string playerName = "player.mochimochi";
+    private const string cropName = "crop.puyopuyo";
+    
+    public FileDataHandler(string filePath)
     {
         this.filePath = filePath;
-        this.fileName = fileName;
     }
 
     public GameData load(string id)
     {
-        string path = Path.Combine(filePath, id, fileName);
-        GameData loadedData = null;
-
-        if (File.Exists(path))
-        {
-            try
-            {
-                string data;
-                using (FileStream stream = new FileStream(path, FileMode.Open))
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        data = reader.ReadToEnd();
-                    }
-                    
-                    loadedData = JsonUtility.FromJson<GameData>(data);
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("Error while loading data: " + path + "\n" + e);
-            }
-        }
+        GameData loadedData = new GameData();
+        
+        loadContainer(id, ref loadedData);
+        loadLevel(id, ref loadedData);
+        loadPlayer(id, ref loadedData);
+        loadCrop(id, ref loadedData);
         
         return loadedData;
     }
-
     public Dictionary<string, GameData> loadAll()
     {
         Dictionary<string, GameData> loadedData = new Dictionary<string, GameData>();
@@ -53,7 +38,7 @@ public class FileDataHandler
         {
             string profileId = info.Name;
             
-            string fullPath = Path.Combine(filePath, profileId, fileName);
+            string fullPath = Path.Combine(filePath, profileId);
             if (!File.Exists(fullPath)) continue;
 
             GameData profileData = load(profileId);
@@ -69,12 +54,20 @@ public class FileDataHandler
 
     public void save(GameData gameData, string id)
     {
-        string path = Path.Combine(filePath, id, fileName);
+        saveContainer(id, gameData);
+        saveLevel(id, gameData);
+        savePlayer(id, gameData);
+        saveCrop(id, gameData);
+    }
+
+    private void saveContainer(string id, GameData savedData)
+    {
+        string path = Path.Combine(filePath, id, containerName);
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             
-            string data = JsonUtility.ToJson(gameData, true);
+            string data = JsonUtility.ToJson(savedData.levelContainerData, true);
 
             using (FileStream stream = new FileStream(path, FileMode.Create))
             {
@@ -87,6 +80,169 @@ public class FileDataHandler
         catch (Exception e)
         {
             Debug.LogError("Error while saving data: " + path + "\n" + e);
+        }
+    }
+    private void saveLevel(string id, GameData savedData)
+    {
+        string path = Path.Combine(filePath, id, levelName);
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            
+            string data = JsonUtility.ToJson(savedData.levelData, true);
+
+            using (FileStream stream = new FileStream(path, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(data);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Error while saving data: " + path + "\n" + e);
+        }
+    }
+    private void savePlayer(string id, GameData savedData)
+    {
+        string path = Path.Combine(filePath, id, playerName);
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            
+            string data = JsonUtility.ToJson(savedData.playerData, true);
+
+            using (FileStream stream = new FileStream(path, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(data);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Error while saving data: " + path + "\n" + e);
+        }
+    }
+    private void saveCrop(string id, GameData savedData)
+    {
+        string path = Path.Combine(filePath, id, cropName);
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            
+            string data = JsonUtility.ToJson(savedData.levelCropData, true);
+
+            using (FileStream stream = new FileStream(path, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(data);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Error while saving data: " + path + "\n" + e);
+        }
+    }
+    
+    private void loadContainer(string id, ref GameData loadedData)
+    {
+        string path = Path.Combine(filePath, id, containerName);
+        if (File.Exists(path))
+        {
+            try
+            {
+                using (var stream = new FileStream(path, FileMode.Open))
+                {
+                    string data;
+                    using (var reader = new StreamReader(stream))
+                    {
+                        data = reader.ReadToEnd();
+                    }
+                    
+                    loadedData.levelContainerData = JsonUtility.FromJson<LevelContainerData>(data);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error while loading data: " + path + "\n" + e);
+            }
+        }
+    }
+    private void loadLevel(string id, ref GameData loadedData)
+    {
+        string path = Path.Combine(filePath, id, levelName);
+        if (File.Exists(path))
+        {
+            try
+            {
+                using (var stream = new FileStream(path, FileMode.Open))
+                {
+                    string data;
+                    using (var reader = new StreamReader(stream))
+                    {
+                        data = reader.ReadToEnd();
+                    }
+                    
+                    loadedData.levelData = JsonUtility.FromJson<LevelData>(data);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error while loading data: " + path + "\n" + e);
+            }
+        }
+    }
+    private void loadPlayer(string id, ref GameData loadedData)
+    {
+        string path = Path.Combine(filePath, id, playerName);
+        if (File.Exists(path))
+        {
+            try
+            {
+                using (var stream = new FileStream(path, FileMode.Open))
+                {
+                    string data;
+                    using (var reader = new StreamReader(stream))
+                    {
+                        data = reader.ReadToEnd();
+                    }
+                    
+                    loadedData.playerData = JsonUtility.FromJson<PlayerData>(data);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error while loading data: " + path + "\n" + e);
+            }
+        }
+    }
+    private void loadCrop(string id, ref GameData loadedData)
+    {
+        string path = Path.Combine(filePath, id, cropName);
+        if (File.Exists(path))
+        {
+            try
+            {
+                using (var stream = new FileStream(path, FileMode.Open))
+                {
+                    string data;
+                    using (var reader = new StreamReader(stream))
+                    {
+                        data = reader.ReadToEnd();
+                    }
+                    
+                    loadedData.levelCropData = JsonUtility.FromJson<LevelCropData>(data);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error while loading data: " + path + "\n" + e);
+            }
         }
     }
 } 

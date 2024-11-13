@@ -4,8 +4,13 @@ using UnityEngine;
 
 public interface IActivator
 {
-    public abstract void highlight(bool isHovered);
-    public abstract void activate(GameObject player);
+    public static readonly int outlineColor = Shader.PropertyToID("_OutlineColor");
+    public static readonly int outlineThickness = Shader.PropertyToID("_OutlineThickness");
+    
+    public void highlight(bool isHovered);
+    public void activate(GameObject player);
 
-    public abstract bool state();
+    public bool state();
+
+    public GameObject getGameObject();
 }

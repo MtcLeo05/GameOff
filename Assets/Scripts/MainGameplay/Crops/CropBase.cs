@@ -8,8 +8,8 @@ public abstract class CropBase : MonoBehaviour
     public Material outline;
     public DaySystem daySystem;
     public CropDrop[] drops;
-    
-    public float xOffset, yOffset, zOffset;
+
+    public Vector3 offset;
     
     public int maxStage;
     public int stage;
@@ -66,53 +66,17 @@ public abstract class CropBase : MonoBehaviour
     
     public virtual void loadData(CropData cData, Registry registry)
     {
-        drops = new CropDrop[cData.drops.Length];
-        
-        for (var i = 0; i < cData.drops.Length; i++)
-        {
-            SerializableCropDrop sCDrop = cData.drops[i];
-            drops[i] = new CropDrop(
-                registry.getItemFromName(sCDrop.item.id),
-                sCDrop.item.count,
-                sCDrop.chance
-            );
-        }
-        
-        maxStage = cData.maxStage;
         stage = cData.stage;
         lifetime = cData.lifetime;
-        timeForStage = cData.timeForStage;
     }
 
 
-    public virtual CropData saveData(Registry registry)
+    public virtual CropData saveData()
     {
-        SerializableCropDrop[] crops = new SerializableCropDrop[drops.Length];
-        
-        for (var i = 0; i < drops.Length; i++)
-        {
-            crops[i] = new SerializableCropDrop(
-                new SerializableStack(
-                    registry.getIdFromItem(drops[i].item),
-                    drops[i].count
-                ),
-                drops[i].chance
-            );
-        }
-
         return new CropData(
             cropType,
-            crops,
-            maxStage,
             stage,
-            lifetime,
-            timeForStage
+            lifetime
         );
-    }
-
-    [Serializable]
-    public enum CropType
-    {
-        Tomato
     }
 }
