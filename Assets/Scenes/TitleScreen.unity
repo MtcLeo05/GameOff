@@ -427,7 +427,7 @@ PrefabInstance:
     - target: {fileID: 1379014999850001305, guid: d909092dd88ca3541bd61dc13f33e3d4,
         type: 3}
       propertyPath: profileId
-      value: Slot3
+      value: Slot2
       objectReference: {fileID: 0}
     - target: {fileID: 3882700772085744495, guid: d909092dd88ca3541bd61dc13f33e3d4,
         type: 3}
@@ -1839,7 +1839,7 @@ PrefabInstance:
     - target: {fileID: 1379014999850001305, guid: d909092dd88ca3541bd61dc13f33e3d4,
         type: 3}
       propertyPath: profileId
-      value: Slot4
+      value: Slot3
       objectReference: {fileID: 0}
     - target: {fileID: 3882700772085744495, guid: d909092dd88ca3541bd61dc13f33e3d4,
         type: 3}

@@ -16,7 +16,31 @@ public class FileDataHandler
     {
         this.filePath = filePath;
     }
+    
+    public Dictionary<string, GameData> loadAll()
+    {
+        var loadedData = new Dictionary<string, GameData>();
 
+        var dirInfos = new DirectoryInfo(filePath).EnumerateDirectories();
+        
+        foreach (var info in dirInfos)
+        {
+            var profileId = info.Name;
+            
+            var fullPath = Path.Combine(filePath, profileId);
+            if (!Directory.Exists(fullPath)) continue;
+
+            var profileData = load(profileId);
+
+            if (profileData != null)
+            {
+                loadedData.Add(profileId, profileData);
+            }
+        }
+        
+        return loadedData;
+    }
+    
     public GameData load(string id)
     {
         GameData loadedData = new GameData();
@@ -25,29 +49,6 @@ public class FileDataHandler
         loadLevel(id, ref loadedData);
         loadPlayer(id, ref loadedData);
         loadCrop(id, ref loadedData);
-        
-        return loadedData;
-    }
-    public Dictionary<string, GameData> loadAll()
-    {
-        Dictionary<string, GameData> loadedData = new Dictionary<string, GameData>();
-
-        IEnumerable<DirectoryInfo> dirInfos = new DirectoryInfo(filePath).EnumerateDirectories();
-        
-        foreach (DirectoryInfo info in dirInfos)
-        {
-            string profileId = info.Name;
-            
-            string fullPath = Path.Combine(filePath, profileId);
-            if (!File.Exists(fullPath)) continue;
-
-            GameData profileData = load(profileId);
-
-            if (profileData != null)
-            {
-                loadedData.Add(profileId, profileData);
-            }
-        }
         
         return loadedData;
     }

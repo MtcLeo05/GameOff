@@ -11,7 +11,7 @@ public class InventoryManager: MonoBehaviour, IDataPersistence
     {
         id = Guid.NewGuid().ToString();
     }
-    
+
     public Registry registry;
     
     public GameObject inventoryHud;
@@ -22,8 +22,8 @@ public class InventoryManager: MonoBehaviour, IDataPersistence
     {
         foreach (InventorySlot slot in slots)
         {
-            InventoryItem slotItem = slot.GetComponentInChildren<InventoryItem>();
-            if (slotItem != null && slotItem.item == item && slotItem.item.stackable && slotItem.count < slotItem.item.maxStackSize)
+            InventoryItem slotItem = slot.getItem();
+            if (slotItem && slotItem.item == item && slotItem.item.stackable && slotItem.count < slotItem.item.maxStackSize)
             {
                 slotItem.increaseCount(1);
                 return true;
@@ -32,12 +32,11 @@ public class InventoryManager: MonoBehaviour, IDataPersistence
         
         foreach (InventorySlot slot in slots)
         {
-            InventoryItem slotItem = slot.GetComponentInChildren<InventoryItem>();
-            if (slotItem == null)
-            {
-                spawnItem(item, slot);
-                return true;
-            }
+            InventoryItem slotItem = slot.getItem();
+            if (slotItem) continue;
+            
+            spawnItem(item, slot);
+            return true;
         }
 
         return false;
@@ -81,8 +80,7 @@ public class InventoryManager: MonoBehaviour, IDataPersistence
         List<SerializableStack> items = new List<SerializableStack>();
         foreach (var inventorySlot in slots)
         {
-            InventoryItem item = inventorySlot.GetComponentInChildren<InventoryItem>();
-
+            InventoryItem item = inventorySlot.getItem();
             SerializableStack stack;
             
             if (item == null)

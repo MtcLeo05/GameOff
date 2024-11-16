@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerInventoryManager: InventoryManager
 {
     public ItemNameDisplay itemName;
-
+    
     private int selectedSlot = -1;
     
     private void Start()
@@ -77,7 +77,7 @@ public class PlayerInventoryManager: InventoryManager
         for (var i = 0; i < slots.Length; i++)
         {
             InventorySlot inventorySlot = slots[i];
-            InventoryItem item = inventorySlot.GetComponentInChildren<InventoryItem>();
+            InventoryItem item = inventorySlot.getItem();
 
             SerializableStack stack;
             
@@ -118,7 +118,7 @@ public class PlayerInventoryManager: InventoryManager
         return slots[selectedSlot].GetComponentInChildren<InventoryItem>();
     }
 
-    private ContainerBase lastContainer;
+    public ContainerBase lastContainer;
     public void openInventory(ContainerBase container)
     {
         GetComponent<PlayerMove>().inventoryOpen = true;    
@@ -134,7 +134,7 @@ public class PlayerInventoryManager: InventoryManager
         }
 
         lastContainer = container;
-        lastContainer.inventory.inventoryHud.SetActive(true);
+        lastContainer.openInventory();
     }
 
     public void closeInventory()
@@ -145,7 +145,6 @@ public class PlayerInventoryManager: InventoryManager
 
         if (lastContainer)
         {
-            lastContainer.inventory.inventoryHud.SetActive(false);
             lastContainer.close();
         }
     }

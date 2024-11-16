@@ -14,11 +14,6 @@ public class FoodItem: Item
         
         item.increaseCount(-1);
 
-        if (item.count <= 0)
-        {
-            Destroy(item.gameObject);
-        }
-
         playerHealth.stamina += foodAmount;
         
         return true;

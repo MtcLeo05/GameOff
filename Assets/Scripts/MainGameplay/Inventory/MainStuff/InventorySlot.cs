@@ -20,18 +20,24 @@ public class InventorySlot: MonoBehaviour, IDropHandler
             InventoryItem heldItem = eventData.pointerDrag.GetComponent<InventoryItem>();
             InventoryItem slotItem = GetComponentInChildren<InventoryItem>();
 
-            if (heldItem.item == slotItem.item && heldItem.item.stackable &&
-                heldItem.count + slotItem.count < heldItem.item.maxStackSize)
-            {
-                slotItem.increaseCount(heldItem.count);
-                Destroy(heldItem.gameObject);
-            }
+            if (heldItem.item != slotItem.item || !heldItem.item.stackable) return;
+            if (heldItem.count + slotItem.count >= heldItem.item.maxStackSize) return;
             
+            slotItem.increaseCount(heldItem.count);
+            Destroy(heldItem.gameObject);
             return;
         }
         
         InventoryItem item = eventData.pointerDrag.GetComponent<InventoryItem>();
         item.parentAfterDrag = transform;
+    }
+
+    public InventoryItem getItem()
+    {
+        if (gameObject.GetComponentInChildren<InventoryItem>())
+            return gameObject.GetComponentInChildren<InventoryItem>();
+        
+        return null;
     }
 
     public void select()

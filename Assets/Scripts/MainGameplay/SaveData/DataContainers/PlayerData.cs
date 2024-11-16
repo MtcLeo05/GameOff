@@ -10,14 +10,15 @@ public class PlayerData
     public SerializableDictionary<string, InventoryData> playersInventory;
     public float health;
     public float stamina;
-
+    public float money;
     
     public PlayerData()
     {
         playerPosition = new Vector3(-20, -10, 20);
         playersInventory = new SerializableDictionary<string, InventoryData>();
         health = 100;
-        stamina = 50;
+        stamina = 200;
+        money = 0;
     }
 }
 

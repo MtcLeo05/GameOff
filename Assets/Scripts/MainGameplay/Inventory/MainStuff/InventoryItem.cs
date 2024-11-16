@@ -25,13 +25,24 @@ public class InventoryItem: MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     public void increaseCount(int amount)
     {
         count += amount;
+        
+        if (count <= 0)
+        {
+            Destroy(gameObject);
+            return;
+        }
         refreshCount();
     }
 
     public void overrideCount(int amount)
     {
-        this.count = amount;
+        count = amount;
         refreshCount();
+        
+        if (count <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void refreshCount()

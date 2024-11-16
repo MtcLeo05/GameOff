@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba9887093c19b264cb86ea973cbc32a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: game.wonderhoy
-  initializeDataIfNull: 0
+  initializeDataIfNull: 1
   registry: {fileID: 4008123860672233979, guid: 80456e611f4f46d4386cce19de55083a,
     type: 3}
+  profileId: 
