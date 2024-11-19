@@ -127,11 +127,11 @@ MonoBehaviour:
   daySystem: {fileID: 0}
   drops:
   - item: {fileID: 11400000, guid: 1bc1f056e5c405744b7f5d70332a1f08, type: 2}
-    count: 2
-    chance: 1
-  - item: {fileID: 11400000, guid: 8e9e4e5030ad2a444ba7ca50fc3cc541, type: 2}
     count: 1
-    chance: 0.5
+    chance: 1
+  - item: {fileID: 11400000, guid: 1bc1f056e5c405744b7f5d70332a1f08, type: 2}
+    count: 1
+    chance: 0.25
   offset: {x: 0.5, y: 1.25, z: 0.5}
   maxStage: 2
   stage: 0
